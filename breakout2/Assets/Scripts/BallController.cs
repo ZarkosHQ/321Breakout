@@ -32,6 +32,9 @@ public class BallController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (!isBallInPlay)
+        {
+            gameObject.transform.position = paddle.transform.position + new Vector3(0, 0.5f);
+        }
     }
 }
