@@ -145,6 +145,7 @@ public class GameController : MonoBehaviour
     private void Quit_started(InputAction.CallbackContext obj)
     {
         Application.Quit();
+        UnityEditor.EditorApplication.isPlaying = false;
     }
 
     private void Restart_started(InputAction.CallbackContext obj)
