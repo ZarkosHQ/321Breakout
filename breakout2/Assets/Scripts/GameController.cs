@@ -144,7 +144,7 @@ public class GameController : MonoBehaviour
     }
     private void Quit_started(InputAction.CallbackContext obj)
     {
-
+        Application.Quit();
     }
 
     private void Restart_started(InputAction.CallbackContext obj)
