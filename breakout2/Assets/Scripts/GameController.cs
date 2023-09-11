@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
@@ -22,11 +23,17 @@ public class GameController : MonoBehaviour
     [SerializeField] private GameObject brick;
 
     [SerializeField] private TMP_Text scoretext;
-    [SerializeField]private int score;
+    [SerializeField] private int score;
 
     [SerializeField] private TMP_Text endGameText;
 
     private BallController ball;
+
+    [SerializeField] private TMP_Text livesText;
+    private int lives;
+
+    [SerializeField] private TMP_Text restartText;
+    [SerializeField] private TMP_Text launchText;
 
     // Start is called before the first frame update
     void Start()
@@ -38,6 +45,29 @@ public class GameController : MonoBehaviour
 
         ball = GameObject.FindObjectOfType<BallController>();
 
+        lives = 3;
+
+        scoretext.text = "Score: " + score.ToString();
+        livesText.text = "Lives: " + lives.ToString();
+
+        restartText.gameObject.SetActive(false);
+        launchText.gameObject.SetActive(true);
+    }
+    public void LoseALife()
+    {
+        lives--;
+        livesText.text = "Lives: " + lives.ToString();
+        launchText.gameObject.SetActive(true);
+
+        if (lives == 0)
+        {
+            endGameText.text = "YOU HAVE FAILED!";
+            endGameText.gameObject.SetActive(true);
+            ball.StopBall();
+            paddle.SetActive(false);
+            restartText.gameObject.SetActive(true);
+            launchText.gameObject.SetActive(false);
+        }
     }
 
     public void UpdateScore()
@@ -48,7 +78,9 @@ public class GameController : MonoBehaviour
         {
             endGameText.text = "You Win!!!!";
             endGameText.gameObject.SetActive(true);
-            ball.ResetBall();
+            ball.StopBall();
+            restartText.gameObject.SetActive(true);
+            paddle.SetActive(false);
         }
     }
 
@@ -87,9 +119,19 @@ public class GameController : MonoBehaviour
 
     }
 
+    private void OnDestroy()
+    {
+        move.started -= Move_started;
+        move.canceled -= Move_canceled;
+        restart.started -= Restart_started;
+        quit.started -= Quit_started;
+        launch.started -= Launch_started;
+    }
+
     private void Launch_started(InputAction.CallbackContext obj)
     {
         ball.LaunchTheBall();
+        launchText.gameObject.SetActive(false);
     }
 
     private void Move_canceled(InputAction.CallbackContext obj)
@@ -107,7 +149,9 @@ public class GameController : MonoBehaviour
 
     private void Restart_started(InputAction.CallbackContext obj)
     {
-        
+        SceneManager.LoadScene(1);
+
+        restartText.gameObject.SetActive(false);
     }
 
 
